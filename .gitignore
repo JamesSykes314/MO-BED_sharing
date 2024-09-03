@@ -1,5 +1,5 @@
 *.DS_Store
 __pycache__/
-.gitattributes
 *.ipynb_checkpoints
 *.jupyter/desktop-workspaces
+.pytest_cache/
