@@ -1,0 +1,50 @@
+Brief info:
+- Tested Ackley function.
+- Tested 2, 3, 4, 6, 8, 10, 12 and 16-dimensional versions (in this order).
+- In each case, the global minimum point was 0.
+- The number of Bayesian Optimisation trials used is on the x-axis and the mean minimum found
+is on the y-axis. The size of the initial sample was always total_samples - n_trials.
+- Function is from the benchmark_functions package (https://gitlab.com/luca.baronti/python_benchmark_functions), using default parameters.
+- 100, 200 and 400 total samples were tested on the Ackley function in each of the above dimensions.
+- 15 initial Latin Hypercube samples followed by 10 BO samples using EI acquisition function.
+- The number of iterations was 10000/total_samples, so the larger sample tests were more noisy (especially the 400 one).
+- In each case, the number of trials tested was between 0 and 96.
+- It was meant to be between 0 and total_samples - 4, but I (stupidly!) forgot to change the upper bound on the search space.
+Therefore, the 200 and 400 samples tests need to be interpreted slightly differently than the 100 samples tests.
+- Four of the 100 samples tests didn't complete (8, 10, 12 and 16 dimensions) in the imposed 12-hour limit but those results are still only missing one sample out of 25.
+
+Noteworthy points about results:
+100 samples:
+- It was highly favourable to perform the minimum number of initial samples
+(I forced there to be at least 4).
+- With the lower-dimensional functions, we roughly halved the mean minimum point
+found when we used BO to perform almost all of the samples.
+- With the higher-dimensional functions, the multiplicative improvement by using almost entirely BO samples was smaller
+- HOWEVER, it was even more clear in these cases that when we only had a 'budget' of 100 samples, we had to perform the minimum number (4)
+of initial samples if we wanted to see a significant improvement.
+
+200 samples:
+- 2-dimensional graph actually looks similar to ones from 100 samples tests, even though we're now looking at always performing 100 initial uninformed samples
+and then are deciding for how many of the remaining 100 to use BO.
+- 3, 4 and 6-dimensional graphs look similar to one other.
+There is a significant improvement when using 20-30 BO samples over using none.
+There wasn't much of a benefit to using lots more BO samples than that (compared to having more initial samples instead)
+- As the number of dimensions increases further we start to see that it's better to perform fewer BO samples.
+It seems that it's better to perform a small number of BO samples than none at all,
+but noise caused by the lower number of iterations makes it hard to tell here.
+
+400 samples:
+- Similar story for 2 dimensions as with 200 samples. Even with 300 initial samples, we don't see any real improvement on the performance with only 100 initial samples,
+and don't come close to the performance with 4 initial samples and 96 BO samples.
+Clear that we need to perform as many BO samples as we can.
+This all holds true with the 3 and 4-dimensional versions of the function as well.
+- In 6 and 8 dimensions, we see a big improvement when using 50 BO samples over not using any, but it doesn't seem beneficial to use any more than that.
+10-dimensional case is very noisy, but implies a similar trend.
+- In 12 and 16 dimensions it would've been helpful to have more samples with a low number (0-20) of n_trials to better understand the performance with barely any trials.
+A clear improvement still seen when using around 50 BO samples. Seems that using 20-40 may be as good (or possibly better).
+
+Summary:
+- Extremely beneficial to use BO to minimise the Ackley function regardless of the number of dimensions.
+- With the high-dimensional versions of the functions, if we only have a budget of 100 samples, we do best when only getting 4 initial samples.
+If we have a budget of 200 or 400 samples and have already done 100 or 300 initial samples respectively, then we still benefit a lot from doing 30-50 BO samples,
+but we don't need much more than that.
